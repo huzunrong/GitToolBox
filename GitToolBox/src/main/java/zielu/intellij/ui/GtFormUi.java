@@ -9,5 +9,7 @@ public interface GtFormUi {
 
   void afterStateSet();
 
-  void dispose();
+  default void dispose() {
+    // do nothing
+  }
 }

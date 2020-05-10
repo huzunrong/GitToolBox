@@ -53,6 +53,10 @@ internal class ProjectConfig(
       return getInstance(project).state
     }
 
+    fun getMerged(project: Project): MergedProjectConfig {
+      return MergedProjectConfig(AppConfig.get(), get(project))
+    }
+
     @JvmStatic
     fun getInstance(project: Project): ProjectConfig {
       return AppUtil.getServiceInstance(project, ProjectConfig::class.java)

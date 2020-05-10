@@ -1,17 +1,19 @@
 package zielu.intellij.util
 
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
-internal fun createBooleanProperty(): ZProperty<Boolean> {
-  return ZBoolPropertyImpl()
+internal fun <T> createRefProperty(initialValue: T): ZProperty<T> {
+  return ZRefPropertyImpl(initialValue)
 }
 
-private class ZBoolPropertyImpl : ZProperty<Boolean> {
-  private val value: AtomicBoolean = AtomicBoolean()
+private class ZRefPropertyImpl<T>(
+  initialValue: T
+) : ZProperty<T> {
+  private val valueStore: AtomicReference<T> = AtomicReference(initialValue)
 
-  override fun get(): Boolean = value.get()
-
-  override fun set(value: Boolean) {
-    this.value.set(value)
-  }
+  override var value: T
+    get() = valueStore.get()
+    set(value) {
+      valueStore.set(value)
+    }
 }

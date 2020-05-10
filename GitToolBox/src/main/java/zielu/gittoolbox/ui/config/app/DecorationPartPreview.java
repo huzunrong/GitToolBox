@@ -14,7 +14,7 @@ import zielu.gittoolbox.ui.ExtendedRepoInfo;
 import zielu.gittoolbox.ui.StatusPresenter;
 import zielu.gittoolbox.util.Count;
 
-class DecorationPartPreview {
+public class DecorationPartPreview {
   private static final Map<DecorationPartType, String> PREVIEWS = ImmutableMap.of(BRANCH, "master",
       LOCATION, "/path/to/location", TAGS_ON_HEAD, "1.0.0", CHANGED_COUNT, "1 changed");
 
@@ -22,7 +22,7 @@ class DecorationPartPreview {
     throw new IllegalStateException();
   }
 
-  static StringBand appendPreview(StatusPresenter presenter, DecorationPartType type, StringBand preview) {
+  public static StringBand appendPreview(StatusPresenter presenter, DecorationPartType type, StringBand preview) {
     return preview.append(getPreview(presenter, type));
   }
 
