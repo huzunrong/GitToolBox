@@ -14,6 +14,7 @@ import com.intellij.ui.layout.LCFlags
 import com.intellij.ui.layout.panel
 import jodd.util.StringBand
 import org.jdesktop.swingx.action.AbstractActionExt
+import zielu.gittoolbox.ResBundle
 import zielu.gittoolbox.config.DecorationPartConfig
 import zielu.gittoolbox.config.DecorationPartType
 import zielu.gittoolbox.config.GitToolBoxConfig2
@@ -76,10 +77,10 @@ internal class ProjectViewPage(
     val prefixTextField = JBTextField()
     val postfixTextField = JBTextField()
     val decoratorDetailsPanel = panel {
-      row("Prefix") {
+      row(ResBundle.message("configurable.app.decorationPart.prefix.label")) {
         prefixTextField()
       }
-      row("Postfix") {
+      row(ResBundle.message("configurable.app.decorationPart.postfix.label")) {
         postfixTextField()
       }
     }
@@ -90,12 +91,12 @@ internal class ProjectViewPage(
 
     panel = panel(LCFlags.debug, LCFlags.fillX) {
       row {
-        label("Decoration order")
+        label(ResBundle.message("configurable.app.decorationPart.layout.label"))
       }
       row {
         configPanel(CCFlags.growX)
       }
-      row("Preview") {
+      row(ResBundle.message("configurable.app.decorationPart.layoutPreview.label")) {
         layoutPreviewTextField()
       }
     }
@@ -144,12 +145,14 @@ internal class ProjectViewPage(
       override fun textChanged(e: DocumentEvent) {
         currentDecorationPart()?.prefix = prefixTextField.text
         decorationLayoutList.repaint()
+        updateDecorationPreview()
       }
     })
     postfixTextField.document.addDocumentListener(object : DocumentAdapter() {
       override fun textChanged(e: DocumentEvent) {
         currentDecorationPart()?.postfix = postfixTextField.text
         decorationLayoutList.repaint()
+        updateDecorationPreview()
       }
     })
   }
