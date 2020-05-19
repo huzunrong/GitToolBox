@@ -1,6 +1,7 @@
 package zielu.gittoolbox.ui.config.app.v2
 
 import com.intellij.ui.components.JBTabbedPane
+import zielu.gittoolbox.ResBundle
 import zielu.gittoolbox.config.GitToolBoxConfig2
 import zielu.intellij.ui.CompositeGtFormUiEx
 import zielu.intellij.ui.GtFormUiEx
@@ -22,11 +23,20 @@ internal class AppConfigForm : GtFormUiEx<GitToolBoxConfig2> {
     val appPages = AppPages()
     val generalPage = GeneralPage(appPages)
     val projectViewPage = ProjectViewPage(appPages)
+    val blamePage = BlamePage()
+    val autoFetchPages = AutoFetchPage()
+    val statusPage = StatusPage()
     pages.add(generalPage)
     pages.add(projectViewPage)
+    pages.add(autoFetchPages)
+    pages.add(statusPage)
+    pages.add(blamePage)
     pages.init()
-    tabs.addTab("General", generalPage.content)
-    tabs.addTab("Project View", projectViewPage.content)
+    tabs.addTab(ResBundle.message("configurable.app.general.tab.title"), generalPage.content)
+    tabs.addTab(ResBundle.message("configurable.app.projectView.tab.title"), projectViewPage.content)
+    tabs.addTab(ResBundle.message("configurable.app.blame.tab.title"), blamePage.content)
+    tabs.addTab(ResBundle.message("configurable.app.autoFetch.tab.title"), autoFetchPages.content)
+    tabs.addTab(ResBundle.message("configurable.app.status.tab.title"), statusPage.content)
   }
 
   override fun dispose() {

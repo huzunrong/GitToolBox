@@ -1,6 +1,5 @@
 package zielu.gittoolbox.ui.config.prj;
 
-import com.google.common.collect.Lists;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
@@ -51,6 +50,9 @@ import zielu.gittoolbox.config.RemoteConfig;
 import zielu.gittoolbox.fetch.AutoFetchParams;
 import zielu.gittoolbox.ui.config.GtPatternFormatterForm;
 import zielu.gittoolbox.ui.config.ReferencePointForStatusTypeRenderer;
+import zielu.gittoolbox.ui.config.common.AutoFetchExclusionTreeRenderer;
+import zielu.gittoolbox.ui.config.common.AutoFetchExclusionsTreeModel;
+import zielu.gittoolbox.ui.config.common.GtRemoteChooser;
 import zielu.gittoolbox.ui.util.AppUiUtil;
 import zielu.gittoolbox.util.GtUtil;
 import zielu.intellij.ui.GtFormUi;
@@ -173,8 +175,8 @@ public class GtPrjForm implements GtFormUi {
     autoFetchExclusionsDecorator.setRemoveAction(button -> onRemoveAutoFetchExclusion());
     autoFetchExclusionsDecorator.setRemoveActionName(
         ResBundle.message("configurable.prj.autoFetch.exclusions.remove.label"));
-    CollectionComboBoxModel<ReferencePointForStatusType> referencePointTypeModel = new CollectionComboBoxModel<>(
-        Lists.newArrayList(ReferencePointForStatusType.values()));
+    CollectionComboBoxModel<ReferencePointForStatusType> referencePointTypeModel =
+        new CollectionComboBoxModel<>(ReferencePointForStatusType.allValues());
     referencePointTypeComboBox.setModel(referencePointTypeModel);
     referencePointTypeComboBox.setRenderer(new ReferencePointForStatusTypeRenderer());
     referencePointTypeComboBox.addActionListener(e -> {

@@ -89,7 +89,7 @@ internal class ProjectViewPage(
     configPanel.add(decoratorPanel)
     configPanel.add(decoratorDetailsPanel)
 
-    panel = panel(LCFlags.debug, LCFlags.fillX) {
+    panel = panel(LCFlags.fillX) {
       row {
         label(ResBundle.message("configurable.app.decorationPart.layout.label"))
       }
