@@ -10,7 +10,6 @@ import zielu.gittoolbox.branch.RecentBranchesService
 import zielu.gittoolbox.changes.ChangesTrackerService
 import zielu.gittoolbox.config.AppConfig
 import zielu.gittoolbox.config.ProjectConfig
-import zielu.gittoolbox.fetch.AutoFetchAllowedBuildSubscriber
 import zielu.gittoolbox.fetch.AutoFetchComponent
 import zielu.gittoolbox.fetch.AutoFetchState
 import zielu.gittoolbox.metrics.AppMetrics
@@ -101,11 +100,6 @@ internal class SmokeIntegrationTest {
   @Test
   fun `should return BranchUiService`(project: Project) {
     assertThat(BranchUiService.getInstance(project)).isNotNull
-  }
-
-  @Test
-  fun `should return AutoFetchAllowedBuildSubscriber`() {
-    assertThat(AutoFetchAllowedBuildSubscriber.getInstance()).isNotNull
   }
 
   @Test
