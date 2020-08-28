@@ -63,7 +63,8 @@ internal class GeneralPage(
           DefaultComboBoxModel(StatusPresenters.allPresenters()),
           presentationMode::get,
           { presentationMode.set(it!!) },
-          renderer).component
+          renderer
+        ).component
         combo.addActionListener {
           val presenter = combo.selectedItem as StatusPresenter
           appPages.statusPresenter = presenter
