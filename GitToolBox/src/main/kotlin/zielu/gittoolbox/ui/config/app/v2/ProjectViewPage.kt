@@ -101,7 +101,7 @@ internal class ProjectViewPage(
       }
     }
 
-    DecorationPartType.values().forEach { type: DecorationPartType ->
+    DecorationPartType.getValues().forEach { type: DecorationPartType ->
       val action: Action = object : AbstractActionExt(type.label) {
         override fun actionPerformed(e: ActionEvent) {
           val config = DecorationPartConfig()

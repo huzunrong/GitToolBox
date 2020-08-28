@@ -18,7 +18,7 @@ internal class CompositeGtFormUiEx<T> : GtFormUiEx<T> {
   }
 
   override fun getContent(): JComponent {
-    TODO("not implemented")
+    TODO("not implemented - should never be called")
   }
 
   override fun afterStateSet() {

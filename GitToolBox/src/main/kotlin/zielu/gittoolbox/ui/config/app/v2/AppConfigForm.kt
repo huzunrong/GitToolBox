@@ -26,17 +26,20 @@ internal class AppConfigForm : GtFormUiEx<GitToolBoxConfig2> {
     val blamePage = BlamePage()
     val autoFetchPages = AutoFetchPage()
     val statusPage = StatusPage()
+    val commitPage = CommitPage()
     pages.add(generalPage)
     pages.add(projectViewPage)
     pages.add(autoFetchPages)
     pages.add(statusPage)
     pages.add(blamePage)
+    pages.add(commitPage)
     pages.init()
     tabs.addTab(ResBundle.message("configurable.app.general.tab.title"), generalPage.content)
     tabs.addTab(ResBundle.message("configurable.app.projectView.tab.title"), projectViewPage.content)
     tabs.addTab(ResBundle.message("configurable.app.blame.tab.title"), blamePage.content)
     tabs.addTab(ResBundle.message("configurable.app.autoFetch.tab.title"), autoFetchPages.content)
     tabs.addTab(ResBundle.message("configurable.app.status.tab.title"), statusPage.content)
+    tabs.addTab(ResBundle.message("configurable.app.commit.tab.title"), commitPage.content)
   }
 
   override fun dispose() {
