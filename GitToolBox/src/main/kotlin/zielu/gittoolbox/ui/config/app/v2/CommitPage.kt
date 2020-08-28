@@ -3,6 +3,7 @@ package zielu.gittoolbox.ui.config.app.v2
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicLazyProperty
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.layout.panel
 import zielu.gittoolbox.ResBundle
 import zielu.gittoolbox.config.CommitCompletionMode
@@ -10,6 +11,7 @@ import zielu.gittoolbox.config.GitToolBoxConfig2
 import zielu.intellij.ui.GtFormUiEx
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
+import javax.swing.ListCellRenderer
 
 internal class CommitPage : GtFormUiEx<GitToolBoxConfig2> {
   private val commitDialogCompletionMode = AtomicLazyProperty {
@@ -23,10 +25,12 @@ internal class CommitPage : GtFormUiEx<GitToolBoxConfig2> {
   override fun init() {
     panel = panel {
       row(ResBundle.message("commit.dialog.completion.mode.label")) {
+        val renderer: ListCellRenderer<CommitCompletionMode?> = SimpleListCellRenderer.create("") { it?.displayLabel }
         comboBox(
           DefaultComboBoxModel(CommitCompletionMode.values()),
           commitDialogCompletionMode::get,
-          { commitDialogCompletionMode.set(it!!) }
+          { commitDialogCompletionMode.set(it!!) },
+          renderer
         )
       }
       row {

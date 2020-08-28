@@ -130,7 +130,8 @@ internal class GeneralPage(
       row(ResBundle.message("update.project.action.label")) {
         val values = UpdateProjectActionService.getInstance().getAll()
         val renderer: ListCellRenderer<UpdateProjectAction?> = SimpleListCellRenderer.create("") { it?.getName() }
-        comboBox(DefaultComboBoxModel(Vector(values)),
+        comboBox(
+          DefaultComboBoxModel(Vector(values)),
           updateProjectAction::get,
           { updateProjectAction.set(it!!) },
           renderer
@@ -140,7 +141,8 @@ internal class GeneralPage(
         }
       }
       row(ResBundle.message("configurable.app.absoluteDateTimeStyle.label")) {
-        comboBox(DefaultComboBoxModel(AbsoluteDateTimeStyle.values()),
+        comboBox(
+          DefaultComboBoxModel(AbsoluteDateTimeStyle.values()),
           absoluteDateTypeStyle::get,
           { absoluteDateTypeStyle.set(it!!) },
           AbsoluteDateTimeStyleRenderer()
