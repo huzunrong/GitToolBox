@@ -1,7 +1,10 @@
 package zielu.intellij.ui;
 
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.util.ui.UIUtil;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JComponent;
@@ -9,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GtConfigurableBase<F extends GtFormUi, C> extends
-    BaseConfigurable {
+    BaseConfigurable implements Disposable {
 
   private final AtomicReference<F> form = new AtomicReference<>();
 
@@ -32,7 +35,9 @@ public abstract class GtConfigurableBase<F extends GtFormUi, C> extends
   protected void afterInit(@NotNull F form) {
   }
 
-  protected void dispose() {
+  @Override
+  public final void dispose() {
+    //do nothing
   }
 
   private synchronized F getForm() {
@@ -86,7 +91,7 @@ public abstract class GtConfigurableBase<F extends GtFormUi, C> extends
 
   @Override
   public synchronized void disposeUIResources() {
-    dispose();
+    Disposer.dispose(this);
     F formInstance = form.getAndSet(null);
     if (formInstance != null) {
       formInstance.dispose();

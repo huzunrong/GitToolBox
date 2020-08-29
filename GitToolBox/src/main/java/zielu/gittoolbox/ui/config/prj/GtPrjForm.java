@@ -48,6 +48,7 @@ import zielu.gittoolbox.config.ReferencePointForStatusConfig;
 import zielu.gittoolbox.config.ReferencePointForStatusType;
 import zielu.gittoolbox.config.RemoteConfig;
 import zielu.gittoolbox.fetch.AutoFetchParams;
+import zielu.gittoolbox.ui.config.CommitCompletionConfigForm;
 import zielu.gittoolbox.ui.config.GtPatternFormatterForm;
 import zielu.gittoolbox.ui.config.ReferencePointForStatusTypeRenderer;
 import zielu.gittoolbox.ui.config.common.AutoFetchExclusionTreeRenderer;
@@ -160,9 +161,13 @@ public class GtPrjForm implements GtFormUi {
       Point point = popupPoint.getPoint();
       addCommitCompletionPopup.show(popupPoint.getComponent(), point.x, point.y);
     });
-    commitCompletionDecorator.setAddActionName(ResBundle.message("commit.dialog.completion.formatters.add.tooltip"));
+    commitCompletionDecorator.setAddActionName(
+        ResBundle.message("commit.dialog.completion.formatters.add.tooltip")
+    );
     commitCompletionDecorator.setRemoveAction(button -> onCommitCompletionItemRemove());
-    commitCompletionDecorator.setRemoveActionName("commit.dialog.completion.formatters.remove.tooltip");
+    commitCompletionDecorator.setRemoveActionName(
+        ResBundle.message("commit.dialog.completion.formatters.remove.tooltip")
+    );
     commitCompletionPanel.add(commitCompletionDecorator.createPanel(), BorderLayout.CENTER);
 
     autoFetchExclusions.setRootVisible(false);
@@ -189,7 +194,7 @@ public class GtPrjForm implements GtFormUi {
     if (config == null) {
       completionItemPatternForm.getContent().setVisible(false);
     } else if (config.type == CommitCompletionType.PATTERN) {
-      completionItemPatternForm.setCommitCompletionConfig(config);
+      completionItemPatternForm.setData(new CommitCompletionConfigForm(config));
       completionItemPatternForm.afterStateSet();
       completionItemPatternForm.getContent().setVisible(true);
     } else {

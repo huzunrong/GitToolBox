@@ -1,5 +1,6 @@
 package zielu.gittoolbox.ui.config.app.v2
 
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBTabbedPane
 import zielu.gittoolbox.ResBundle
 import zielu.gittoolbox.config.GitToolBoxConfig2
@@ -10,6 +11,10 @@ import javax.swing.JComponent
 internal class AppConfigForm : GtFormUiEx<GitToolBoxConfig2> {
   private val pages = CompositeGtFormUiEx<GitToolBoxConfig2>()
   private val tabs = JBTabbedPane()
+
+  init {
+    Disposer.register(this, pages)
+  }
 
   override fun getContent(): JComponent {
     return tabs

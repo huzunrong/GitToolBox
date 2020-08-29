@@ -1,12 +1,15 @@
 package zielu.gittoolbox.ui.config.app.v2
 
+import com.intellij.openapi.util.Disposer
 import zielu.gittoolbox.config.AppConfig
 import zielu.gittoolbox.config.GitToolBoxConfig2
 import zielu.intellij.ui.GtConfigurableBase
 
 internal class AppConfigurable : GtConfigurableBase<AppConfigForm, GitToolBoxConfig2>() {
   override fun createForm(): AppConfigForm {
-    return AppConfigForm()
+    val form = AppConfigForm()
+    Disposer.register(this, form)
+    return form
   }
 
   override fun getDisplayName(): String {

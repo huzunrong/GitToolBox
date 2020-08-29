@@ -84,7 +84,7 @@ internal class ProjectViewPage(
         postfixTextField()
       }
     }
-    decoratorDetailsPanel.border = BorderFactory.createEmptyBorder(0, 5, 5, 5)
+    decoratorDetailsPanel.border = BorderFactory.createEmptyBorder(3, 5, 5, 5)
     val configPanel = JPanel(GridLayout(1, 2))
     configPanel.add(decoratorPanel)
     configPanel.add(decoratorDetailsPanel)
@@ -172,8 +172,7 @@ internal class ProjectViewPage(
   }
 
   override fun fillFromState(state: GitToolBoxConfig2) {
-    decorationLayoutModel.removeAll()
-    decorationLayoutModel.add(state.decorationParts.map { it.copy() })
+    decorationLayoutModel.replaceAll(state.decorationParts.map { it.copy() })
   }
 
   override fun isModified(): Boolean {

@@ -1,5 +1,6 @@
 package zielu.intellij.ui
 
+import com.intellij.openapi.util.Disposer
 import javax.swing.JComponent
 
 internal class CompositeGtFormUiEx<T> : GtFormUiEx<T> {
@@ -7,6 +8,7 @@ internal class CompositeGtFormUiEx<T> : GtFormUiEx<T> {
 
   fun add(form: GtFormUiEx<T>) {
     forms.add(form)
+    Disposer.register(this, form)
   }
 
   override fun fillFromState(state: T) {
@@ -30,7 +32,6 @@ internal class CompositeGtFormUiEx<T> : GtFormUiEx<T> {
   }
 
   override fun dispose() {
-    forms.forEach { it.dispose() }
     forms.clear()
   }
 
