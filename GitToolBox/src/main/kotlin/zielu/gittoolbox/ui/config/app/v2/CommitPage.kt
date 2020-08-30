@@ -80,11 +80,6 @@ internal class CommitPage : GtFormUiEx<GitToolBoxConfig2> {
     completionFormattersPatternForm = GtPatternFormatterForm()
     Disposer.register(this, completionFormattersPatternForm)
     completionFormattersPatternForm.init()
-    val completionDecoratorDetails = panel {
-      row {
-        completionFormattersPatternForm.content()
-      }
-    }
     completionFormattersList.selectionModel.addListSelectionListener {
       if (!it.valueIsAdjusting) {
         onCompletionFormatterSelected(completionFormattersList.selectedValue)
@@ -92,7 +87,7 @@ internal class CommitPage : GtFormUiEx<GitToolBoxConfig2> {
     }
     val completionFormattersPanel = JPanel(GridLayout(1, 2, 5, 0))
     completionFormattersPanel.add(completionDecoratorPanel)
-    completionFormattersPanel.add(completionDecoratorDetails)
+    completionFormattersPanel.add(completionFormattersPatternForm.content)
 
     panel = panel {
       row(message("commit.dialog.completion.mode.label")) {
