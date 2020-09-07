@@ -4,6 +4,7 @@ import com.intellij.openapi.observable.properties.AtomicLazyProperty
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.layout.panel
+import com.intellij.ui.layout.selectedValueMatches
 import zielu.gittoolbox.ResBundle
 import zielu.gittoolbox.config.GitToolBoxConfig2
 import zielu.gittoolbox.config.ReferencePointForStatusType
@@ -25,7 +26,7 @@ internal class StatusPage : GtFormUiEx<GitToolBoxConfig2> {
       row {
         label(ResBundle.message("configurable.prj.parentBranch.label"))
         cell {
-          comboBox(
+          val referencePointComboBox = comboBox(
             CollectionComboBoxModel(ReferencePointForStatusType.allValues()),
             referencePointForStatus::get,
             { referencePointForStatus.set(it!!) },
@@ -34,6 +35,10 @@ internal class StatusPage : GtFormUiEx<GitToolBoxConfig2> {
           textField(
             referencePointName::get,
             { referencePointName.set(it) }
+          ).enableIf(
+            referencePointComboBox.component.selectedValueMatches {
+              ReferencePointForStatusType.SELECTED_PARENT_BRANCH == it
+            }
           )
         }
       }

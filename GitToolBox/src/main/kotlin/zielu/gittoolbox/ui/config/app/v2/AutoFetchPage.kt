@@ -3,6 +3,7 @@ package zielu.gittoolbox.ui.config.app.v2
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.layout.panel
+import com.intellij.ui.layout.selected
 import zielu.gittoolbox.ResBundle
 import zielu.gittoolbox.config.GitToolBoxConfig2
 import zielu.gittoolbox.fetch.AutoFetchParams
@@ -19,13 +20,14 @@ internal class AutoFetchPage : GtFormUiEx<GitToolBoxConfig2> {
   override fun init() {
     panel = panel {
       row {
-        checkBox(
+        val autoFetchCheckBox = checkBox(
           ResBundle.message("configurable.app.autoFetchEnabled.label"),
           autoFetchEnabled::get,
           autoFetchEnabled::set
         )
         cell {
           spinner(autoFetchInterval::value, AutoFetchParams.INTERVAL_MIN_MINUTES, AutoFetchParams.INTERVAL_MAX_MINUTES)
+            .enableIf(autoFetchCheckBox.selected)
           label(ResBundle.message("configurable.app.autoFetchUnits.label"))
         }
       }
