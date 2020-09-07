@@ -21,7 +21,7 @@ internal class AppConfigurable : GtConfigurableBase<AppConfigForm, GitToolBoxCon
   }
 
   override fun getConfig(): GitToolBoxConfig2 {
-    return AppConfig.get()
+    return AppConfig.getConfig()
   }
 
   override fun checkModified(form: AppConfigForm, config: GitToolBoxConfig2): Boolean {

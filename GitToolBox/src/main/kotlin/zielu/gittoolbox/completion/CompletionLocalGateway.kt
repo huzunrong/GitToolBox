@@ -11,7 +11,7 @@ import java.io.File
 
 internal class CompletionLocalGateway(private val project: Project) : LocalGateway(project) {
   fun getFormatters(): ImmutableList<Formatter> {
-    return ImmutableList.copyOf(ProjectConfig.get(project).getCompletionFormatters())
+    return ImmutableList.copyOf(ProjectConfig.getConfig(project).getCompletionFormatters())
   }
 
   fun getRepositories(files: Collection<File>): Collection<GitRepository> {

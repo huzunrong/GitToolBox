@@ -104,11 +104,11 @@ internal class SmokeIntegrationTest {
 
   @Test
   fun `should get application configuration`() {
-    assertThat(AppConfig.get()).isNotNull
+    assertThat(AppConfig.getConfig()).isNotNull
   }
 
   @Test
   fun `should get project configuration`(project: Project) {
-    assertThat(ProjectConfig.get(project)).isNotNull
+    assertThat(ProjectConfig.getConfig(project)).isNotNull
   }
 }

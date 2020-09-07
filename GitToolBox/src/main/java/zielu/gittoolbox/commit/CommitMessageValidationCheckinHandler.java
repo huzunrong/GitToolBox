@@ -28,7 +28,7 @@ public class CommitMessageValidationCheckinHandler extends CheckinHandler {
   }
 
   private GitToolBoxConfigPrj getConfig() {
-    return ProjectConfig.get(panel.getProject());
+    return ProjectConfig.getConfig(panel.getProject());
   }
 
   @Override

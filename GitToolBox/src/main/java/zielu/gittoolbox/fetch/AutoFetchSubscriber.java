@@ -32,7 +32,7 @@ class AutoFetchSubscriber {
   void onRepoStateChanged(@NotNull RepoInfo previous,
                           @NotNull RepoInfo current,
                           @NotNull GitRepository repository) {
-    if (ProjectConfig.get(project).getAutoFetchOnBranchSwitch()) {
+    if (ProjectConfig.getConfig(project).getAutoFetchOnBranchSwitch()) {
       if (!previous.isEmpty() && !current.isEmpty() && !previous.status().sameLocalBranch(current.status())) {
         if (exclusions.isAllowed(repository)) {
           AutoFetchOnBranchSwitch.getInstance(project).onBranchSwitch(current, repository);
