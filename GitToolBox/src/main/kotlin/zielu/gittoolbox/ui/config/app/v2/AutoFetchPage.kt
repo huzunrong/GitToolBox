@@ -15,6 +15,8 @@ internal class AutoFetchPage : GtFormUiEx<GitToolBoxConfig2> {
   private val autoFetchEnabled = AtomicBooleanProperty(true)
   private val autoFetchInterval = createIntProperty(AutoFetchParams.DEFAULT_INTERVAL_MINUTES)
   private val autoFetchOnBranchSwitch = AtomicBooleanProperty(true)
+
+  private val exclusionsForm = AutoFetchExclusionsForm()
   private lateinit var panel: DialogPanel
 
   override fun init() {
@@ -37,6 +39,11 @@ internal class AutoFetchPage : GtFormUiEx<GitToolBoxConfig2> {
           autoFetchOnBranchSwitch::get,
           autoFetchOnBranchSwitch::set
         )
+      }
+      row {
+        exclusionsForm.init()
+        val content = exclusionsForm.content
+        content()
       }
     }
   }

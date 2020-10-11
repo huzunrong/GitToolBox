@@ -40,4 +40,10 @@ internal object ResIcons {
   @JvmStatic
   val Logo: Icon
     get() = IconLoader.getIcon("/META-INF/pluginIcon.svg")
+  @JvmStatic
+  val Plus: Icon
+    get() = IconLoader.getIcon("/zielu/gittoolbox/plus-circle.png")
+  @JvmStatic
+  val Minus: Icon
+    get() = IconLoader.getIcon("/zielu/gittoolbox/minus-circle.png")
 }
