@@ -7,3 +7,4 @@ testRun/
 .gradle/
 ignore-revs.txt
 gradle/
+/idea-sandbox/

@@ -9,16 +9,20 @@ import com.intellij.openapi.vfs.VirtualFile
 import zielu.gittoolbox.util.LocalGateway
 
 internal class BlameServiceLocalGateway(private var project: Project) : LocalGateway(project) {
+  private val messageBus by lazy {
+    project.messageBus
+  }
+
   fun lineNumberProvider(document: Document): UpToDateLineNumberProvider {
     return UpToDateLineNumberProviderImpl(document, project)
   }
 
   fun fireBlameUpdated(vFile: VirtualFile) {
-    publishAsync { it.syncPublisher(BlameService.BLAME_UPDATE).blameUpdated(vFile) }
+    runInBackground { messageBus.syncPublisher(BlameService.BLAME_UPDATE).blameUpdated(vFile) }
   }
 
   fun fireBlameInvalidated(vFile: VirtualFile) {
-    publishAsync { it.syncPublisher(BlameService.BLAME_UPDATE).blameInvalidated(vFile) }
+    runInBackground { messageBus.syncPublisher(BlameService.BLAME_UPDATE).blameInvalidated(vFile) }
   }
 
   fun getAnnotation(vFile: VirtualFile): BlameAnnotation {

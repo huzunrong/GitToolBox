@@ -11,14 +11,14 @@ internal class BlamePresenterLocalGateway {
     DatePresenter.getInstance()
   }
 
-  fun getShowInlineSubject() = AppConfig.getConfig().blameInlineShowSubject
+  fun getShowInlineSubject() = AppConfig.get().blameInlineShowSubject
 
-  fun getInlineAuthorNameType(): AuthorNameType = AppConfig.getConfig().blameInlineAuthorNameType
+  fun getInlineAuthorNameType(): AuthorNameType = AppConfig.get().blameInlineAuthorNameType
 
-  fun getStatusAuthorNameTYpe(): AuthorNameType = AppConfig.getConfig().blameStatusAuthorNameType
+  fun getStatusAuthorNameTYpe(): AuthorNameType = AppConfig.get().blameStatusAuthorNameType
 
   fun formatInlineDateTime(dateTime: ZonedDateTime): String {
-    return datePresenter.format(AppConfig.getConfig().blameInlineDateType, dateTime)
+    return datePresenter.format(AppConfig.get().blameInlineDateType, dateTime)
   }
 
   fun formatDateTime(dateType: DateType, dateTime: ZonedDateTime) = datePresenter.format(dateType, dateTime)

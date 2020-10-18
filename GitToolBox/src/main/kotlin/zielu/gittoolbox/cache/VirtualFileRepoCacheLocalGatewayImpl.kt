@@ -10,17 +10,20 @@ import java.util.function.Supplier
 internal class VirtualFileRepoCacheLocalGatewayImpl(
   project: Project
 ) : LocalGateway(project), VirtualFileRepoCacheLocalGateway {
+  private val messageBus by lazy {
+    project.messageBus
+  }
 
   override fun fireCacheChanged() {
-    publishSync { it.syncPublisher(CACHE_CHANGE).updated() }
+    messageBus.syncPublisher<VirtualFileRepoCacheListener>(CACHE_CHANGE).updated()
   }
 
   override fun fireAdded(roots: Collection<VirtualFile>) {
-    publishSync { it.syncPublisher(CACHE_CHANGE).added(roots) }
+    messageBus.syncPublisher<VirtualFileRepoCacheListener>(CACHE_CHANGE).added(roots)
   }
 
   override fun fireRemoved(roots: Collection<VirtualFile>) {
-    publishSync { it.syncPublisher(CACHE_CHANGE).removed(roots) }
+    messageBus.syncPublisher<VirtualFileRepoCacheListener>(CACHE_CHANGE).removed(roots)
   }
 
   override fun rootsVFileCacheSizeGauge(size: () -> Int) {

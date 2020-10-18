@@ -9,8 +9,8 @@ import java.time.ZonedDateTime
 import java.util.Date
 
 internal class DatePresenterImpl
-@NonInjectable
-constructor(private val gateway: DatePresenterLocalGateway) : DatePresenter {
+  @NonInjectable
+  constructor(private val gateway: DatePresenterLocalGateway) : DatePresenter {
 
   constructor() : this(DatePresenterLocalGatewayImpl())
 
@@ -26,9 +26,8 @@ constructor(private val gateway: DatePresenterLocalGateway) : DatePresenter {
   }
 
   private fun formatPrettyDate(date: ZonedDateTime): String {
-    return ZDateFormatUtil.formatPrettyDateTime(
-      date, ZonedDateTime.now(gateway.getClock()), getAbsoluteDateTimeFormat()
-    )
+    return ZDateFormatUtil.formatPrettyDateTime(date, ZonedDateTime.now(gateway.getClock()),
+      getAbsoluteDateTimeFormat())
   }
 
   private fun getAbsoluteDateTimeFormat(): SyncDateFormat = gateway.getAbsoluteDateTimeFormat()

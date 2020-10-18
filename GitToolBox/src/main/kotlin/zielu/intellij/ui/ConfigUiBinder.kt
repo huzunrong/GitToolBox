@@ -31,22 +31,6 @@ internal class ConfigUiBinder<CONFIG, UI> {
     bindings.add(JavaToUiBinding(getFromConfig, setInUi))
   }
 
-  fun <T> bind(
-    getFromConfig: (CONFIG) -> T,
-    setInConfig: (CONFIG, T) -> Unit,
-    getFromUi: (UI) -> T,
-    setInUi: (UI, T) -> Unit
-  ) {
-    bindings.add(KtBinding(getFromConfig, setInConfig, getFromUi, setInUi))
-  }
-
-  fun <T> bind(
-    getFromConfig: (CONFIG) -> T,
-    setInUi: (UI, T) -> Unit
-  ) {
-    bindings.add(KtToUiBinding(getFromConfig, setInUi))
-  }
-
   fun populateUi(config: CONFIG, ui: UI) {
     bindings.forEach { it.populateUi(config, ui) }
   }
@@ -118,36 +102,3 @@ private class JavaToUiBinding<CONFIG, UI, T>(
   }
 }
 
-private class KtBinding<CONFIG, UI, T>(
-  val fromConfig: (CONFIG) -> T,
-  val toConfig: (CONFIG, T) -> Unit,
-  val fromUi: (UI) -> T,
-  val toUi: (UI, T) -> Unit
-) : Binding<CONFIG, UI, T> {
-  override fun populateUi(config: CONFIG, ui: UI) {
-    toUi.invoke(ui, fromConfig.invoke(config))
-  }
-
-  override fun checkModified(config: CONFIG, ui: UI): Boolean {
-    return fromUi.invoke(ui) != fromConfig.invoke(config)
-  }
-
-  override fun populateConfig(config: CONFIG, ui: UI) {
-    toConfig.invoke(config, fromUi.invoke(ui))
-  }
-}
-
-private class KtToUiBinding<CONFIG, UI, T>(
-  val fromConfig: (CONFIG) -> T,
-  val toUi: (UI, T) -> Unit
-) : Binding<CONFIG, UI, T> {
-  override fun populateUi(config: CONFIG, ui: UI) {
-    toUi.invoke(ui, fromConfig.invoke(config))
-  }
-
-  override fun checkModified(config: CONFIG, ui: UI): Boolean = false
-
-  override fun populateConfig(config: CONFIG, ui: UI) {
-    // do nothing
-  }
-}

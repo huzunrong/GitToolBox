@@ -1,12 +1,18 @@
 package zielu.gittoolbox.changes
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vcs.changes.ChangeListListener
 import com.intellij.openapi.vcs.changes.ChangeListManager
 import zielu.gittoolbox.config.AppConfig
 import zielu.gittoolbox.util.AppUtil
 import zielu.gittoolbox.util.LocalGateway
 
 internal class ChangeListSubscriberLocalGateway(private val project: Project) : LocalGateway(project) {
+
+  fun subscribe(listener: ChangeListListener) {
+    ChangeListManager.getInstance(project).addChangeListListener(listener, project)
+  }
+
   fun changeListRemoved(id: String) {
     runInBackground { ChangesTrackerService.getInstance(project).changeListRemoved(id) }
   }
@@ -28,5 +34,5 @@ internal class ChangeListSubscriberLocalGateway(private val project: Project) : 
     return changeLists.map { ChangeListData(it) }
   }
 
-  fun getTrackingEnabled() = AppConfig.getConfig().isChangesTrackingEnabled()
+  fun getTrackingEnabled() = AppConfig.get().isChangesTrackingEnabled()
 }

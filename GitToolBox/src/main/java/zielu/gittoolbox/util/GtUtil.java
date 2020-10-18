@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
-import com.intellij.openapi.vcs.diff.DiffProvider;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -19,6 +18,9 @@ import git4idea.repo.GitRepositoryManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.CalledInAwt;
 import org.jetbrains.annotations.NotNull;
@@ -57,13 +59,27 @@ public final class GtUtil {
   @CalledInAwt
   public static GitRepository getCurrentRepositoryQuick(@NotNull Project project) {
     GitRepositoryManager repositoryManager = GitUtil.getRepositoryManager(project);
-    String recentRootPath = GitVcsSettings.getInstance(project).getRecentRootPath();
-    return DvcsUtil.guessCurrentRepositoryQuick(project, repositoryManager, recentRootPath);
+    return DvcsUtil.guessCurrentRepositoryQuick(project, repositoryManager, GitVcsSettings.getInstance(project)
+        .getRecentRootPath());
   }
 
-  @Nullable
-  public static VirtualFile findFileByUrl(String url) {
-    return VirtualFileManager.getInstance().findFileByUrl(url);
+  @NotNull
+  public static List<GitRepository> getRepositoriesForRoots(@NotNull Project project,
+                                                            @NotNull Collection<String> roots) {
+    GitRepositoryManager manager = GitRepositoryManager.getInstance(project);
+    VirtualFileManager vfManager = VirtualFileManager.getInstance();
+    return roots.stream()
+        .map(vfManager::findFileByUrl)
+        .filter(Objects::nonNull)
+        .map(manager::getRepositoryForRoot)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  public static Optional<GitRepository> getRepositoryForRoot(@NotNull Project project, String root) {
+    GitRepositoryManager manager = GitRepositoryManager.getInstance(project);
+    VirtualFileManager vfManager = VirtualFileManager.getInstance();
+    return Optional.ofNullable(root).map(vfManager::findFileByUrl).map(manager::getRepositoryForRoot);
   }
 
   @NotNull
@@ -78,8 +94,8 @@ public final class GtUtil {
 
   @NotNull
   public static VcsRevisionNumber getCurrentRevision(@NotNull Project project, @NotNull VirtualFile file) {
-    DiffProvider diffProvider = GitVcs.getInstance(project).getDiffProvider();
-    VcsRevisionNumber currentRevision = diffProvider.getCurrentRevision(file);
+    GitVcs vcs = GitVcs.getInstance(project);
+    VcsRevisionNumber currentRevision = vcs.getDiffProvider().getCurrentRevision(file);
     return ObjectUtils.defaultIfNull(currentRevision, VcsRevisionNumber.NULL);
   }
 }

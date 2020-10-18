@@ -19,5 +19,4 @@ internal class ViewPsiDirectoryNodeExtension {
 }
 
 private val EXTENSION_POINT_NAME: ExtensionPointName<ViewPsiDirectoryNodeEP> = ExtensionPointName.create(
-  "zielu.gittoolbox.viewPsiDirectoryNode"
-)
+  "zielu.gittoolbox.viewPsiDirectoryNode")

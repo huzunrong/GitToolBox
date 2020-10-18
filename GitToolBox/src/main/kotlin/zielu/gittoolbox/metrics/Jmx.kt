@@ -46,10 +46,7 @@ internal object Jmx {
 }
 
 private class JmxMetricsReporter(private val reporter: JmxReporter) : MetricsReporter {
-  private val log = Logger.getInstance(JmxMetricsReporter::class.java)
-
   override fun dispose() {
     reporter.close()
-    log.info("Disposed")
   }
 }

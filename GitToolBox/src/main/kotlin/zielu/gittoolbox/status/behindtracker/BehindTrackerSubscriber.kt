@@ -1,8 +1,8 @@
 package zielu.gittoolbox.status.behindtracker
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.util.concurrency.AppExecutorUtil
 import git4idea.repo.GitRepository
 import zielu.gittoolbox.cache.RepoInfo
@@ -12,14 +12,13 @@ import zielu.gittoolbox.util.GtUtil
 import zielu.gittoolbox.util.ReschedulingExecutor
 import java.util.concurrent.TimeUnit
 
-internal class BehindTrackerSubscriber(
-  private val project: Project
-) : Disposable {
+internal class BehindTrackerSubscriber(private val project: Project) {
   private val executor: ReschedulingExecutor
 
   init {
     val scheduledExecutor = AppExecutorUtil.createBoundedScheduledExecutorService("GtBehindTracker", 1)
     executor = ReschedulingExecutor(scheduledExecutor, true)
+    Disposer.register(project, executor)
   }
 
   fun onStateChanged(repoInfo: RepoInfo, repository: GitRepository) {
@@ -33,10 +32,6 @@ internal class BehindTrackerSubscriber(
   private fun scheduleNotifyTask() {
     val task = BehindNotifyTask(project)
     executor.schedule("behind-notify", DisposeSafeRunnable(project, task), 10, TimeUnit.SECONDS)
-  }
-
-  override fun dispose() {
-    executor.dispose()
   }
 
   companion object {

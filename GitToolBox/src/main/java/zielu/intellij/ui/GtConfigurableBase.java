@@ -1,12 +1,13 @@
 package zielu.intellij.ui;
 
+import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.util.ui.UIUtil;
 import javax.swing.JComponent;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class GtConfigurableBase<F extends GtFormUi, C> extends
+public abstract class GtConfigurableBase<F extends GtFormUi, C extends PersistentStateComponent> extends
     BaseConfigurable {
 
   private volatile F form;

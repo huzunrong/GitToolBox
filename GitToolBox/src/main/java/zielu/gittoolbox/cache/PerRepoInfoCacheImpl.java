@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
 import java.util.Collection;
@@ -37,6 +38,7 @@ class PerRepoInfoCacheImpl implements PerRepoInfoCache, Disposable {
     statusCalculator = new CachedStatusCalculator(() -> ProjectMetrics.getInstance(project));
     calculator = GitStatusCalculator.create(project);
     publisher = new InfoCachePublisher(project);
+    Disposer.register(project, this);
   }
 
   private ConcurrentMap<GitRepository, RepoInfo> createBehindStatuses() {
@@ -72,14 +74,11 @@ class PerRepoInfoCacheImpl implements PerRepoInfoCache, Disposable {
   @NotNull
   @Override
   public RepoInfo getInfo(@NotNull GitRepository repository) {
-    if (active.get()) {
-      RepoInfo repoInfo = getRepoInfo(repository);
-      if (repoInfo.isEmpty()) {
-        scheduleUpdate(repository);
-      }
-      return repoInfo;
+    RepoInfo repoInfo = getRepoInfo(repository);
+    if (repoInfo.isEmpty()) {
+      scheduleUpdate(repository);
     }
-    return RepoInfo.empty();
+    return repoInfo;
   }
 
   @NotNull
@@ -94,6 +93,10 @@ class PerRepoInfoCacheImpl implements PerRepoInfoCache, Disposable {
     }
   }
 
+  private void scheduleRefresh(@NotNull GitRepository repository) {
+    CacheTaskScheduler.getInstance(project).scheduleOptional(repository, new RefreshTask());
+  }
+
   private void scheduleMandatoryRefresh(@NotNull GitRepository repository) {
     CacheTaskScheduler.getInstance(project).scheduleMandatory(repository, new RefreshTask());
   }
@@ -104,19 +107,15 @@ class PerRepoInfoCacheImpl implements PerRepoInfoCache, Disposable {
 
   @Override
   public void repoChanged(@NotNull GitRepository repository) {
-    if (active.get()) {
-      log.debug("Got repo changed event: ", repository);
-      scheduleMandatoryRefresh(repository);
-    }
+    log.debug("Got repo changed event: ", repository);
+    scheduleMandatoryRefresh(repository);
   }
 
   @Override
   public void updatedRepoList(ImmutableList<GitRepository> repositories) {
-    if (active.get()) {
-      Set<GitRepository> removed = new HashSet<>(behindStatuses.get().keySet());
-      removed.removeAll(repositories);
-      purgeRepositories(removed);
-    }
+    Set<GitRepository> removed = new HashSet<>(behindStatuses.get().keySet());
+    removed.removeAll(repositories);
+    purgeRepositories(removed);
   }
 
   private void purgeRepositories(@NotNull Collection<GitRepository> repositories) {
@@ -133,26 +132,26 @@ class PerRepoInfoCacheImpl implements PerRepoInfoCache, Disposable {
     behindStatuses.get().remove(repository);
   }
 
+  private void refreshRepo(GitRepository repository) {
+    update(repository);
+  }
+
   @Override
   public void refreshAll() {
-    if (active.get()) {
-      log.debug("Refreshing all repository statuses");
-      refresh(GitUtil.getRepositories(project));
-    }
+    log.debug("Refreshing all repository statuses");
+    refresh(GitUtil.getRepositories(project));
   }
 
   @Override
   public void refresh(Iterable<GitRepository> repositories) {
-    if (active.get()) {
-      log.debug("Refreshing repositories statuses: ", repositories);
-      repositories.forEach(this::scheduleUpdate);
-    }
+    log.debug("Refreshing repositories statuses: ", repositories);
+    repositories.forEach(this::scheduleRefresh);
   }
 
   private class RefreshTask implements CacheTaskScheduler.Task {
     @Override
     public void run(@NotNull GitRepository repository) {
-      update(repository);
+      refreshRepo(repository);
     }
 
     @Override

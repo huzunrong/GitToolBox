@@ -2,28 +2,24 @@ package zielu.gittoolbox.ui.statusbar;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import com.intellij.util.text.DateFormatUtil;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
 import git4idea.util.GitUIUtil;
+import jodd.util.StringBand;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import zielu.gittoolbox.cache.PerRepoInfoCache;
+import zielu.gittoolbox.cache.RepoInfo;
+import zielu.gittoolbox.status.GitAheadBehindCount;
+import zielu.gittoolbox.ui.StatusText;
+import zielu.gittoolbox.util.GtUtil;
+import zielu.gittoolbox.util.Html;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import jodd.util.StringBand;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import zielu.gittoolbox.ResBundle;
-import zielu.gittoolbox.cache.PerRepoInfoCache;
-import zielu.gittoolbox.cache.RepoInfo;
-import zielu.gittoolbox.config.GitToolBoxConfigPrj;
-import zielu.gittoolbox.config.ProjectConfig;
-import zielu.gittoolbox.fetch.AutoFetchComponent;
-import zielu.gittoolbox.status.GitAheadBehindCount;
-import zielu.gittoolbox.ui.StatusText;
-import zielu.gittoolbox.util.GtUtil;
-import zielu.gittoolbox.util.Html;
 
 public class StatusToolTip {
   private final Project project;
@@ -98,19 +94,7 @@ public class StatusToolTip {
   }
 
   private StringBand prepareInfoToolTipPart() {
-    GitToolBoxConfigPrj config = ProjectConfig.get(project);
-    StringBand result = new StringBand();
-    if (config.getAutoFetch()) {
-      result.append(GitUIUtil.bold(ResBundle.message("message.autoFetch"))).append(": ");
-      long lastAutoFetch = AutoFetchComponent.getInstance(project).lastAutoFetch();
-      if (lastAutoFetch != 0) {
-        result.append(DateFormatUtil.formatBetweenDates(lastAutoFetch, System.currentTimeMillis()));
-      } else {
-        result.append(ResBundle.on());
-      }
-    }
-
-    return result;
+    return new StringBand();
   }
 
 

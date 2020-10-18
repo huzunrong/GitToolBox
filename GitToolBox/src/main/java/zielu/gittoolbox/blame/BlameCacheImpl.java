@@ -27,7 +27,6 @@ import zielu.gittoolbox.util.ExecutableTask;
 
 class BlameCacheImpl implements BlameCache, Disposable {
   private static final Logger LOG = Logger.getInstance(BlameCacheImpl.class);
-  private final AtomicBoolean active = new AtomicBoolean(true);
   private final BlameCacheLocalGateway gateway;
   private final LoadingCache<VirtualFile, Cached<Blamed>> annotations = CacheBuilder.newBuilder()
       .maximumSize(75)
@@ -40,23 +39,19 @@ class BlameCacheImpl implements BlameCache, Disposable {
     gateway = new BlameCacheLocalGateway(project);
     gateway.exposeCacheMetrics(annotations, "blame-cache");
     gateway.registerQueuedGauge(queued::size);
+    gateway.disposeWithProject(this);
   }
 
   @Override
   public void dispose() {
-    if (active.compareAndSet(true, false)) {
-      annotations.invalidateAll();
-      queued.clear();
-    }
+    annotations.invalidateAll();
+    queued.clear();
   }
 
   @NotNull
   @Override
   public BlameAnnotation getAnnotation(@NotNull VirtualFile file) {
-    if (active.get()) {
-      return gateway.getCacheGetTimer().timeSupplier(() -> getAnnotationInternal(file));
-    }
-    return BlameAnnotation.EMPTY;
+    return gateway.getCacheGetTimer().timeSupplier(() -> getAnnotationInternal(file));
   }
 
   private BlameAnnotation getAnnotationInternal(@NotNull VirtualFile file) {
@@ -126,15 +121,9 @@ class BlameCacheImpl implements BlameCache, Disposable {
 
   @Override
   public void refreshForRoot(@NotNull VirtualFile root) {
-    if (active.get()) {
-      refreshForRootImpl(root);
-    }
-  }
-
-  private void refreshForRootImpl(@NotNull VirtualFile root) {
     LOG.debug("Refresh for root: ", root);
     Set<VirtualFile> files = new HashSet<>(annotations.asMap()
-        .keySet());
+                                               .keySet());
     files.stream()
         .filter(file -> VfsUtilCore.isAncestor(root, file, false))
         .forEach(this::markDirty);
@@ -151,16 +140,10 @@ class BlameCacheImpl implements BlameCache, Disposable {
 
   @Override
   public void invalidateForRoot(@NotNull VirtualFile root) {
-    if (active.get()) {
-      invalidateForRootImpl(root);
-    }
-  }
-
-  private void invalidateForRootImpl(@NotNull VirtualFile root) {
     LOG.debug("Invalidate for root: ", root);
     gateway.invalidateForRoot(root);
     Set<VirtualFile> files = new HashSet<>(annotations.asMap()
-        .keySet());
+                                               .keySet());
     files.stream()
         .filter(file -> VfsUtilCore.isAncestor(root, file, false))
         .forEach(this::invalidate);
@@ -186,6 +169,16 @@ class BlameCacheImpl implements BlameCache, Disposable {
 
     private void markDirty() {
       dirty.compareAndSet(false, true);
+    }
+  }
+
+  private static class LoaderTimers {
+    final Timer load;
+    final Timer queueWait;
+
+    private LoaderTimers(Timer load, Timer queueWait) {
+      this.load = load;
+      this.queueWait = queueWait;
     }
   }
 

@@ -5,7 +5,7 @@ GitToolBox - plugin for Jetbrains IDEs
 Plugin for family of Jetbrains IDEs that expands build-in `Git Integration`.
 
 ## Features
-For list of features see [the manual](https://github.com/zielu/GitToolBox/wiki/Manual)
+For list of features see [description](./GitToolBox/description.html)
 
 ## Change notes
 For list of change notes see [changenotes](./GitToolBox/change-notes.html)
@@ -18,61 +18,57 @@ Add https://plugins.jetbrains.com/plugins/eap/7499 in **Settings > Plugins > Bro
 repositories...** to receive early access builds.
 
 ## Architecture decisions record
-Record of decisions is [here](https://github.com/zielu/GitToolBox/wiki/ADR).
+Decisions are stored [here](https://github.com/zielu/GitToolBox/wiki/arch).
 
 ## Building & running
 
 ### Releases
 
 #### Release current `-SNAPSHOT`
-```shell script
-gradle clean release
+```
+gradle clean buildAll release
 ```
 #### Upgrade to next minor version
-```shell script
-gradle clean releaseMinorVersion
+```
+gradle clean buildAll releaseMinorVersion
 ```
 #### Upgrade to next major version
-```shell script
-gradle clean releaseMajorVersion
+```
+gradle clean buildAll releaseMajorVersion
 ```
 
 #### Release and publish
 Append ```-Ppublish=true``` and include ```publishPlugin``` task.
 For example
-```shell script
-gradle clean release publishPlugin -Ppublish=true
+```
+gradle clean buildAll release publishPlugin -Ppublish=true
 ```
 
 ### Useful build commands
 Full verification of build
-```shell script
+```
 gradle clean check integrationTest
 ```
 Quick verification of build
-```shell script
+```
 gradle clean check
 ```
 Generate code coverage report
-```shell script
+```
 gradle clean codeCoverage
 ```
 Update gradlew version
-```shell script
-gradle wrapper --gradle-version 5.6.4 --distribution-type ALL
 ```
-Build to install with Install from disk
-```shell script
-gradle buildPlugin
+gradle wrapper --gradle-version 5.6.4 --distribution-type ALL
 ```
 
 ### Useful run commands
 Run with previous sandbox contents
-```shell script
+```
 gradle runIde
 ```
 Run with fresh sandbox
-```shell script
+```
 gradle clean runIde
 ```
 

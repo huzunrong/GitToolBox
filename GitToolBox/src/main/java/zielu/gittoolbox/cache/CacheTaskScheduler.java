@@ -16,10 +16,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jetbrains.annotations.NotNull;
 import zielu.gittoolbox.util.AppUtil;
+import zielu.gittoolbox.util.MemoizeSupplier;
 
 class CacheTaskScheduler implements Disposable {
   private static final long TASK_DELAY_MILLIS = 170;
@@ -28,7 +30,7 @@ class CacheTaskScheduler implements Disposable {
   private final AtomicBoolean active = new AtomicBoolean(true);
   private final Map<GitRepository, Collection<CacheTask>> scheduledRepositories = new ConcurrentHashMap<>();
   private final CacheTaskSchedulerLocalGateway gateway;
-  private final ScheduledExecutorService updateExecutor;
+  private Supplier<ScheduledExecutorService> updateExecutor;
   private long taskDelayMillis = TASK_DELAY_MILLIS;
 
   CacheTaskScheduler(@NotNull Project project) {
@@ -38,7 +40,12 @@ class CacheTaskScheduler implements Disposable {
   @NonInjectable
   CacheTaskScheduler(@NotNull CacheTaskSchedulerLocalGateway gateway) {
     this.gateway = gateway;
-    this.updateExecutor = AppExecutorUtil.createBoundedScheduledExecutorService("GtCache", 1);
+    updateExecutor = new MemoizeSupplier<>(this::createExecutor);
+    gateway.disposeWithProject(this);
+  }
+
+  private ScheduledExecutorService createExecutor() {
+    return AppExecutorUtil.createBoundedScheduledExecutorService("GtCache", 1);
   }
 
   @NotNull
@@ -52,12 +59,10 @@ class CacheTaskScheduler implements Disposable {
 
   @Override
   public void dispose() {
-    if (active.compareAndSet(true, false)) {
-      Collection<Collection<CacheTask>> tasks = new ArrayList<>(scheduledRepositories.values());
-      scheduledRepositories.clear();
-      tasks.stream().flatMap(Collection::stream).forEach(CacheTask::kill);
-      updateExecutor.shutdownNow();
-    }
+    active.compareAndSet(true, false);
+    Collection<Collection<CacheTask>> tasks = new ArrayList<>(scheduledRepositories.values());
+    scheduledRepositories.clear();
+    tasks.stream().flatMap(Collection::stream).forEach(CacheTask::kill);
   }
 
   void scheduleOptional(@NotNull GitRepository repository, @NotNull Task task) {
@@ -97,7 +102,7 @@ class CacheTaskScheduler implements Disposable {
   }
 
   private void submitForExecution(CacheTask task) {
-    updateExecutor.schedule(task, taskDelayMillis, TimeUnit.MILLISECONDS);
+    updateExecutor.get().schedule(task, taskDelayMillis, TimeUnit.MILLISECONDS);
     gateway.queueSizeCounterInc();
     log.debug("Scheduled: ", task);
   }

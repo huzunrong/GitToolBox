@@ -20,7 +20,7 @@ internal class BlameEditorLinePainter : EditorLinePainter() {
   }
 
   private fun shouldShow(project: Project): Boolean {
-    return AppConfig.getConfig().showEditorInlineBlame &&
+    return AppConfig.get().showEditorInlineBlame &&
       !DumbService.isDumb(project) &&
       InlineBlameAllowedExtension.isBlameAllowed(project)
   }

@@ -22,7 +22,6 @@ import javax.swing.Icon;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zielu.gittoolbox.GitToolBox;
 import zielu.gittoolbox.ResBundle;
 import zielu.gittoolbox.ResIcons;
 import zielu.gittoolbox.cache.PerRepoInfoCache;
@@ -44,7 +43,7 @@ import zielu.gittoolbox.util.GtUtil;
 public class GitStatusWidget extends EditorBasedWidget implements StatusBarUi,
     StatusBarWidget.Multiframe, StatusBarWidget.MultipleTextValuesPresentation {
 
-  public static final String ID = GitToolBox.PLUGIN_ID + "." + GitStatusWidget.class.getName();
+  public static final String ID = GitStatusWidget.class.getName();
   private final AtomicBoolean connected = new AtomicBoolean();
   private final AtomicBoolean visible = new AtomicBoolean();
   private final StatusToolTip toolTip;
@@ -190,7 +189,7 @@ public class GitStatusWidget extends EditorBasedWidget implements StatusBarUi,
   }
 
   private boolean isVisibleFromConfig() {
-    return AppConfig.getConfig().getShowStatusWidget();
+    return AppConfig.get().getShowStatusWidget();
   }
 
   @Override
@@ -240,14 +239,14 @@ public class GitStatusWidget extends EditorBasedWidget implements StatusBarUi,
   private void updateData(@NotNull GitRepository repository, RepoInfo repoInfo, ExtendedRepoInfo extendedInfo) {
     icon = null;
     List<String> parts = new ArrayList<>();
-    GitToolBoxConfig2 config = AppConfig.getConfig();
+    GitToolBoxConfig2 config = AppConfig.get();
     if (config.getShowChangesInStatusBar()) {
       parts.add(StatusText.format(extendedInfo));
       if (extendedInfo.hasChanged()) {
         if (extendedInfo.getChangedCount().getValue() > 0) {
-          icon = ResIcons.getChangesPresent();
+          icon = ResIcons.ChangesPresent;
         } else {
-          icon = ResIcons.getNoChanges();
+          icon = ResIcons.NoChanges;
         }
       }
     }

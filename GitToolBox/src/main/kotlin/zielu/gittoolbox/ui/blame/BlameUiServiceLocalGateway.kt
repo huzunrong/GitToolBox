@@ -20,18 +20,23 @@ import zielu.gittoolbox.revision.RevisionInfo
 
 internal class BlameUiServiceLocalGateway(
   private val project: Project,
-  private val textAttributesKey: TextAttributesKey
+  textAttributesKey: TextAttributesKey
 ) {
-  val editorTimer: Timer
-    get() = ProjectMetrics.getInstance(project).timer("blame-editor-painter")
-  val statusBarTimer: Timer
-    get() = ProjectMetrics.getInstance(project).timer("blame-status-bar")
-  val editorInfoTimer: Timer
-    get() = ProjectMetrics.getInstance(project).timer("blame-editor-get-info")
-  val statusBarInfoTimer: Timer
-    get() = ProjectMetrics.getInstance(project).timer("blame-status-bar-get-info")
-  val defaultBlameTextAttributes: TextAttributes
-    get() = DecorationColors.textAttributes(textAttributesKey)
+  val editorTimer: Timer by lazy {
+    ProjectMetrics.getInstance(project).timer("blame-editor-painter")
+  }
+  val statusBarTimer: Timer by lazy {
+    ProjectMetrics.getInstance(project).timer("blame-status-bar")
+  }
+  val editorInfoTimer: Timer by lazy {
+    ProjectMetrics.getInstance(project).timer("blame-editor-get-info")
+  }
+  val statusBarInfoTimer: Timer by lazy {
+    ProjectMetrics.getInstance(project).timer("blame-status-bar-get-info")
+  }
+  val defaultBlameTextAttributes: TextAttributes by lazy {
+    DecorationColors.textAttributes(textAttributesKey)
+  }
 
   fun isUnderGit(vFile: VirtualFile): Boolean {
     return VirtualFileRepoCache.getInstance(project).isUnderGitRoot(vFile)

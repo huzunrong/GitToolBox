@@ -11,9 +11,12 @@ import zielu.gittoolbox.util.LocalGateway
 internal open class ChangesTrackerServiceLocalGateway(
   private val project: Project
 ) : LocalGateway(project) {
+  private val messageBus by lazy {
+    project.messageBus
+  }
 
   fun fireChangeCountsUpdated() {
-    publishAsync { it.syncPublisher(CHANGES_TRACKER_TOPIC).changeCountsUpdated() }
+    runInBackground { messageBus.syncPublisher(CHANGES_TRACKER_TOPIC).changeCountsUpdated() }
   }
 
   fun getRepoForPath(path: FilePath): GitRepository? {

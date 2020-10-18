@@ -33,7 +33,7 @@ class BlameUiSubscriber {
 
   void onBlameUpdate(@NotNull VirtualFile file) {
     log.debug("Blame updated: ", file);
-    GitToolBoxConfig2 config = AppConfig.getConfig();
+    GitToolBoxConfig2 config = AppConfig.get();
     if (config.getShowEditorInlineBlame()) {
       BlameUiService.getExistingInstance(project).ifPresent(service -> service.blameUpdated(file));
       AppUiUtil.invokeLaterIfNeeded(project, () -> handleBlameUpdate(file));

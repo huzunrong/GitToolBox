@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import zielu.gittoolbox.ResBundle;
 import zielu.gittoolbox.config.AppConfig;
 import zielu.gittoolbox.config.GitToolBoxConfig2;
-import zielu.gittoolbox.help.HelpKey;
 import zielu.intellij.ui.ConfigUiBinder;
 import zielu.intellij.ui.GtBinderConfigurableBase;
 
@@ -23,7 +22,7 @@ public class GtConfigurable extends GtBinderConfigurableBase<GtForm, GitToolBoxC
   @Nullable
   @Override
   public String getHelpTopic() {
-    return HelpKey.APP_CONFIG.getId();
+    return ResBundle.message("configurable.app.displayName");
   }
 
   @Override
@@ -33,7 +32,7 @@ public class GtConfigurable extends GtBinderConfigurableBase<GtForm, GitToolBoxC
 
   @Override
   protected GitToolBoxConfig2 getConfig() {
-    return AppConfig.getConfig();
+    return AppConfig.get();
   }
 
   @Override
@@ -50,14 +49,6 @@ public class GtConfigurable extends GtBinderConfigurableBase<GtForm, GitToolBoxC
         GitToolBoxConfig2::setShowProjectViewStatus,
         GtForm::getShowProjectViewStatus,
         GtForm::setShowProjectViewStatus);
-    binder.bind(GitToolBoxConfig2::getBehindTracker,
-        GitToolBoxConfig2::setBehindTracker,
-        GtForm::getBehindTrackerEnabled,
-        GtForm::setBehindTrackerEnabled);
-    binder.bind(GitToolBoxConfig2::getUpdateProjectAction,
-        GitToolBoxConfig2::setUpdateProjectAction,
-        GtForm::getUpdateProjectAction,
-        GtForm::setUpdateProjectAction);
     binder.bind(GitToolBoxConfig2::getDecorationParts,
         GitToolBoxConfig2::setDecorationParts,
         GtForm::getDecorationParts,
@@ -70,14 +61,6 @@ public class GtConfigurable extends GtBinderConfigurableBase<GtForm, GitToolBoxC
         GitToolBoxConfig2::setShowEditorInlineBlame,
         GtForm::getShowEditorInlineBlame,
         GtForm::setShowEditorInlineBlame);
-    binder.bind(GitToolBoxConfig2::getCommitDialogCompletionMode,
-        GitToolBoxConfig2::setCommitDialogCompletionMode,
-        GtForm::getCommitDialogCompletionMode,
-        GtForm::setCommitDialogCompletionMode);
-    binder.bind(GitToolBoxConfig2::getCommitDialogGitmojiCompletion,
-        GitToolBoxConfig2::setCommitDialogGitmojiCompletion,
-        GtForm::getCommitDialogGitmojiCompletionEnabled,
-        GtForm::setCommitDialogGitmojiCompletionEnabled);
     binder.bind(GitToolBoxConfig2::getBlameInlineAuthorNameType,
         GitToolBoxConfig2::setBlameInlineAuthorNameType,
         GtForm::getBlameInlineAuthorNameType,
@@ -94,45 +77,10 @@ public class GtConfigurable extends GtBinderConfigurableBase<GtForm, GitToolBoxC
         GitToolBoxConfig2::setBlameStatusAuthorNameType,
         GtForm::getBlameStatusAuthorNameType,
         GtForm::setBlameStatusAuthorNameType);
-    binder.bind(GitToolBoxConfig2::getAlwaysShowInlineBlameWhileDebugging,
-        GitToolBoxConfig2::setAlwaysShowInlineBlameWhileDebugging,
-        GtForm::alwaysShowInlineBlameWhileDebugging);
     binder.bind(GitToolBoxConfig2::getAbsoluteDateTimeStyle,
         GitToolBoxConfig2::setAbsoluteDateTimeStyle,
         GtForm::getAbsoluteDateTimeStyle,
         GtForm::setAbsoluteDateTimeStyle);
-    binder.bind(GitToolBoxConfig2::getShowChangesInStatusBar,
-        GitToolBoxConfig2::setShowChangesInStatusBar,
-        GtForm::getShowChangesInStatusBar,
-        GtForm::setShowChangesInStatusBar);
-
-    binder.bind(config -> config.getExtrasConfig().getAutoFetchEnabledOverride().getEnabled(),
-        (config, value) -> config.getExtrasConfig().getAutoFetchEnabledOverride().setEnabled(value),
-        GtForm::getAutoFetchEnabledOverride,
-        GtForm::setAutoFetchEnabledOverride
-    );
-    binder.bind(config -> config.getExtrasConfig().getAutoFetchEnabledOverride().getValue(),
-        (config, value) -> config.getExtrasConfig().getAutoFetchEnabledOverride().setValue(value),
-        GtForm::getAutoFetchEnabled,
-        GtForm::setAutoFetchEnabled
-    );
-    binder.bind(config -> config.getExtrasConfig().getAutoFetchEnabledOverride().getAppliedPaths(),
-        GtForm::setAppliedAutoFetchEnabledPaths
-    );
-
-    binder.bind(config -> config.getExtrasConfig().getAutoFetchOnBranchSwitchOverride().getEnabled(),
-        (config, value) -> config.getExtrasConfig().getAutoFetchOnBranchSwitchOverride().setEnabled(value),
-        GtForm::getAutoFetchOnBranchSwitchEnabledOverride,
-        GtForm::setAutoFetchOnBranchSwitchEnabledOverride
-    );
-    binder.bind(config -> config.getExtrasConfig().getAutoFetchOnBranchSwitchOverride().getValue(),
-        (config, value) -> config.getExtrasConfig().getAutoFetchOnBranchSwitchOverride().setValue(value),
-        GtForm::getAutoFetchOnBranchSwitchEnabled,
-        GtForm::setAutoFetchOnBranchSwitchEnabled
-    );
-    binder.bind(config -> config.getExtrasConfig().getAutoFetchOnBranchSwitchOverride().getAppliedPaths(),
-        GtForm::setAppliedAutoFetchOnBranchSwitchEnabledPaths
-    );
   }
 
   @NotNull
@@ -143,7 +91,7 @@ public class GtConfigurable extends GtBinderConfigurableBase<GtForm, GitToolBoxC
 
   @Override
   protected void afterApply(@NotNull GitToolBoxConfig2 previous, @NotNull GitToolBoxConfig2 current) {
-    AppConfig.getInstance().updateState(current);
+    current.fireChanged(previous);
   }
 
   @NotNull
