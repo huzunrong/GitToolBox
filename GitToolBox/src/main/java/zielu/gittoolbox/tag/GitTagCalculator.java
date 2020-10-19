@@ -30,17 +30,6 @@ public class GitTagCalculator {
     return new GitTagCalculator(Preconditions.checkNotNull(project));
   }
 
-  public List<String> tagsForBranch(@NotNull VirtualFile gitRoot, @NotNull String branch) {
-    GitLineHandler h = new GitLineHandler(project, Preconditions.checkNotNull(gitRoot), GitCommand.LOG);
-    h.addParameters("--simplify-by-decoration", "--pretty=format:%d", "--encoding=UTF-8",
-        Preconditions.checkNotNull(branch));
-    h.setSilent(true);
-    TagsLineListener tagsListener = new TagsLineListener();
-    h.addLineListener(tagsListener);
-    GitCommandResult result = Git.getInstance().runCommandWithoutCollectingOutput(h);
-    return result.success() ? tagsListener.getTags() : Collections.emptyList();
-  }
-
   public List<String> tagsForHead(@NotNull VirtualFile gitRoot) {
     return tagsForCommitish(gitRoot, "HEAD");
   }

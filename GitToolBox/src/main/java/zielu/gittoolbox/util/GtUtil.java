@@ -7,7 +7,6 @@ import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.vcs.log.Hash;
 import com.intellij.vcs.log.impl.HashImpl;
 import git4idea.GitUtil;
@@ -18,9 +17,6 @@ import git4idea.repo.GitRepositoryManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.CalledInAwt;
 import org.jetbrains.annotations.NotNull;
@@ -61,25 +57,6 @@ public final class GtUtil {
     GitRepositoryManager repositoryManager = GitUtil.getRepositoryManager(project);
     return DvcsUtil.guessCurrentRepositoryQuick(project, repositoryManager, GitVcsSettings.getInstance(project)
         .getRecentRootPath());
-  }
-
-  @NotNull
-  public static List<GitRepository> getRepositoriesForRoots(@NotNull Project project,
-                                                            @NotNull Collection<String> roots) {
-    GitRepositoryManager manager = GitRepositoryManager.getInstance(project);
-    VirtualFileManager vfManager = VirtualFileManager.getInstance();
-    return roots.stream()
-        .map(vfManager::findFileByUrl)
-        .filter(Objects::nonNull)
-        .map(manager::getRepositoryForRoot)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
-  }
-
-  public static Optional<GitRepository> getRepositoryForRoot(@NotNull Project project, String root) {
-    GitRepositoryManager manager = GitRepositoryManager.getInstance(project);
-    VirtualFileManager vfManager = VirtualFileManager.getInstance();
-    return Optional.ofNullable(root).map(vfManager::findFileByUrl).map(manager::getRepositoryForRoot);
   }
 
   @NotNull
